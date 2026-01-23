@@ -32,7 +32,7 @@ class Configuration {
   bool enableSsl = Platforms.isMobile();
 
   //是否设置系统代理
-  bool enableSystemProxy = true;
+  bool enableSystemProxy = false;
 
   //代理忽略域名
   String proxyPassDomains = SystemProxy.proxyPassDomains;
@@ -55,7 +55,7 @@ class Configuration {
   //远程连接 不持久化保存
   String? remoteHost;
 
-  bool enabledHttp2 = false; // 是否启用http2
+  bool enabledHttp2 = true; // 是否启用http2
 
   //历史记录缓存时间
   int historyCacheTime = 0;
