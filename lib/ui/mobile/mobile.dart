@@ -33,6 +33,9 @@ import 'package:proxypin/network/http/http.dart';
 import 'package:proxypin/network/http/websocket.dart';
 import 'package:proxypin/network/http/http_client.dart';
 import 'package:proxypin/ui/component/memory_cleanup.dart';
+import 'package:proxypin/ui/component/utils.dart';
+import 'package:proxypin/ui/mobile/dataswarm/me.dart';
+import 'package:proxypin/ui/mobile/dataswarm/user.dart';
 import 'package:proxypin/ui/toolbox/toolbox.dart';
 import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/ui/content/panel.dart';
@@ -42,6 +45,7 @@ import 'package:proxypin/ui/mobile/menu/bottom_navigation.dart';
 import 'package:proxypin/ui/mobile/menu/menu.dart';
 import 'package:proxypin/ui/mobile/request/list.dart';
 import 'package:proxypin/ui/mobile/request/search.dart';
+import 'package:proxypin/ui/mobile/dataswarm/login.dart';
 import 'package:proxypin/ui/mobile/widgets/pip.dart';
 import 'package:proxypin/ui/mobile/widgets/remote_device.dart';
 import 'package:proxypin/utils/ip.dart';
@@ -138,6 +142,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
   var toolboxNavigatorKey = GlobalKey<NavigatorState>();
   var configNavigatorKey = GlobalKey<NavigatorState>();
   var settingNavigatorKey = GlobalKey<NavigatorState>();
+  var meNavigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +164,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
       NavigatorPage(
           navigatorKey: settingNavigatorKey,
           child: SettingPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
+      NavigatorPage(navigatorKey: meNavigatorKey, child: DataSwarmMePage()),
     ];
 
     if (!widget.appConfiguration.bottomNavigation) _selectIndex.value = 0;
@@ -226,6 +232,10 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
                                   tooltip: localizations.setting,
                                   icon: const Icon(Icons.settings_outlined),
                                   label: localizations.setting),
+                              BottomNavigationBarItem(
+                                  tooltip: localizations.me,
+                                  icon: const Icon(Icons.person_outlined),
+                                  label: localizations.me),
                             ],
                             currentIndex: _selectIndex.value,
                             onTap: (index) => _selectIndex.value = index,

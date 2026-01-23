@@ -23,6 +23,8 @@ import 'package:proxypin/ui/component/chinese_font.dart';
 import 'package:proxypin/ui/component/multi_window.dart';
 import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/ui/desktop/desktop.dart';
+import 'package:proxypin/ui/mobile/dataswarm/login.dart';
+import 'package:proxypin/ui/mobile/dataswarm/user.dart';
 import 'package:proxypin/ui/mobile/mobile.dart';
 import 'package:proxypin/utils/desktop_support.dart';
 import 'package:proxypin/utils/navigator.dart';
@@ -47,6 +49,11 @@ void main(List<String> args) async {
   var configuration = Configuration.instance;
   //移动端
   if (Platforms.isMobile()) {
+    var userInfoMgr = await UserInfoManager.instance;
+    if (userInfoMgr.currentUser == null) {
+      runApp(FluentApp(DataSwarmLoginPage(), (await AppConfiguration.instance)));
+      return;
+    }
     var appConfiguration = await instance;
     runApp(FluentApp(MobileHomePage((await configuration), appConfiguration), appConfiguration));
     return;

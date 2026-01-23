@@ -370,5 +370,6 @@
 
   "local": "Local",
   "remoteUrl": "Remote URL",
-  "view": "View"
+  "view": "View",
+  "me": "Me"
 }

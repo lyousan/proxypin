@@ -1054,6 +1054,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get view => '查看';
+
+  @override
+  String get me => '我的';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -2107,4 +2110,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get view => '檢視';
+
+  @override
+  String get me => '我的';
 }
