@@ -40,7 +40,8 @@ class ProcessInfoUtils {
   static Future<ProcessInfo?> getProcessByPort(InetSocketAddress socketAddress, String cacheKeyPre) async {
     try {
       if (Platform.isAndroid) {
-        var app = await ProcessInfoPlugin.getProcessByPort(socketAddress.host, socketAddress.port);
+        // var app = await ProcessInfoPlugin.getProcessByPort(socketAddress.host, socketAddress.port);
+        const app = null;
         if (app != null) {
           return app;
         }

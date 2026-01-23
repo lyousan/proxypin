@@ -418,9 +418,11 @@ class RequestPageState extends State<RequestPage> {
                   port = remoteDevice.value.port!;
                 }
 
-                Vpn.startVpn(host, port, proxyServer.configuration, ipProxy: remoteDevice.value.ipProxy);
+                // Vpn.startVpn(host, port, proxyServer.configuration, ipProxy: remoteDevice.value.ipProxy);
               },
-              onStop: () => Vpn.stopVpn()),
+              onStop: () => {
+                    // Vpn.stopVpn()
+                  }),
         ));
   }
 

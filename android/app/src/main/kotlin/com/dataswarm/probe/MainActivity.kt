@@ -36,11 +36,11 @@ class MainActivity : FlutterActivity() {
      * 注册插件
      */
     private fun pluginRegister(flutterEngine: FlutterEngine) {
-        flutterEngine.plugins.add(VpnServicePlugin())
+        // flutterEngine.plugins.add(VpnServicePlugin())
         flutterEngine.plugins.add(PictureInPicturePlugin())
         flutterEngine.plugins.add(lifecycleChannel)
         flutterEngine.plugins.add(InstalledAppsPlugin())
-        flutterEngine.plugins.add(ProcessInfoPlugin())
+        // flutterEngine.plugins.add(ProcessInfoPlugin())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
