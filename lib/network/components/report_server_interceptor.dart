@@ -108,11 +108,14 @@ class ReportServerInterceptor extends Interceptor {
       final respText = await ioResp.transform(utf8.decoder).join();
       if (ioResp.statusCode >= 200 && ioResp.statusCode < 300) {
         logger.i('reportServer delivered to ${server.name} (${uri.toString()}), status=${ioResp.statusCode}');
+        logger.biz("success");
       } else {
         logger.w('reportServer delivery to ${server.name} failed, status=${ioResp.statusCode}, body=$respText');
+        logger.bizError("report fail $requestUrl, status=${ioResp.statusCode}, body=$respText");
       }
     } catch (e, st) {
       logger.e("reportServer error $requestUrl", error: e, stackTrace: st);
+      logger.bizError("report fail $requestUrl", error: e, stackTrace: st);
     }
   }
 }

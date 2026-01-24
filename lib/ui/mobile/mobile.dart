@@ -33,9 +33,8 @@ import 'package:proxypin/network/http/http.dart';
 import 'package:proxypin/network/http/websocket.dart';
 import 'package:proxypin/network/http/http_client.dart';
 import 'package:proxypin/ui/component/memory_cleanup.dart';
-import 'package:proxypin/ui/component/utils.dart';
 import 'package:proxypin/ui/mobile/dataswarm/me.dart';
-import 'package:proxypin/ui/mobile/dataswarm/user.dart';
+import 'package:proxypin/ui/mobile/dataswarm/config.dart';
 import 'package:proxypin/ui/toolbox/toolbox.dart';
 import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/ui/content/panel.dart';
@@ -45,13 +44,14 @@ import 'package:proxypin/ui/mobile/menu/bottom_navigation.dart';
 import 'package:proxypin/ui/mobile/menu/menu.dart';
 import 'package:proxypin/ui/mobile/request/list.dart';
 import 'package:proxypin/ui/mobile/request/search.dart';
-import 'package:proxypin/ui/mobile/dataswarm/login.dart';
 import 'package:proxypin/ui/mobile/widgets/pip.dart';
 import 'package:proxypin/ui/mobile/widgets/remote_device.dart';
+import 'package:proxypin/ui/mobile/request/log_page.dart';
 import 'package:proxypin/utils/ip.dart';
 import 'package:proxypin/utils/lang.dart';
 import 'package:proxypin/utils/listenable_list.dart';
 import 'package:proxypin/utils/navigator.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../app_update/app_update_repository.dart';
 
@@ -120,6 +120,9 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
     proxyServer = ProxyServer(widget.configuration);
     proxyServer.addListener(this);
     proxyServer.start();
+    // 保持屏幕常亮
+    WakelockPlus.enable();
+    SwarmProbeConfig.modeNotifier.addListener(_onModeChange);
 
     if (widget.appConfiguration.upgradeNoticeV24) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -133,12 +136,20 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
   @override
   void dispose() {
     AppLifecycleBinding.instance.removeListener(this);
+    SwarmProbeConfig.modeNotifier.removeListener(_onModeChange);
     super.dispose();
+  }
+
+  void _onModeChange() {
+    setState(() {
+      _selectIndex.value = 0;
+    });
   }
 
   int exitTime = 0;
 
   var requestPageNavigatorKey = GlobalKey<NavigatorState>();
+  var logPageNavigatorKey = GlobalKey<NavigatorState>();
   var toolboxNavigatorKey = GlobalKey<NavigatorState>();
   var configNavigatorKey = GlobalKey<NavigatorState>();
   var settingNavigatorKey = GlobalKey<NavigatorState>();
@@ -146,29 +157,52 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
 
   @override
   Widget build(BuildContext context) {
+    bool isDev = SwarmProbeConfig.mode == 'dev';
+
     var navigationView = [
       NavigatorPage(
           navigatorKey: requestPageNavigatorKey,
           child: RequestPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
-      NavigatorPage(
-          navigatorKey: toolboxNavigatorKey,
-          child: Scaffold(
-              appBar: PreferredSize(
-                  preferredSize: const Size.fromHeight(42),
-                  child: AppBar(
-                      title: Text(localizations.toolbox,
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
-                      centerTitle: true)),
-              body: Toolbox(proxyServer: proxyServer))),
-      NavigatorPage(navigatorKey: configNavigatorKey, child: ConfigPage(proxyServer: proxyServer)),
-      NavigatorPage(
-          navigatorKey: settingNavigatorKey,
-          child: SettingPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
+      if (isDev)
+        NavigatorPage(
+            navigatorKey: toolboxNavigatorKey,
+            child: Scaffold(
+                appBar: PreferredSize(
+                    preferredSize: const Size.fromHeight(42),
+                    child: AppBar(
+                        title: Text(localizations.toolbox,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
+                        centerTitle: true)),
+                body: Toolbox(proxyServer: proxyServer))),
+      if (isDev) NavigatorPage(navigatorKey: configNavigatorKey, child: ConfigPage(proxyServer: proxyServer)),
+      if (isDev)
+        NavigatorPage(
+            navigatorKey: settingNavigatorKey,
+            child: SettingPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
+      NavigatorPage(navigatorKey: logPageNavigatorKey, child: const LogPage()),
       NavigatorPage(
           navigatorKey: meNavigatorKey,
           child: DataSwarmMePage(
             proxyServer: proxyServer,
           )),
+    ];
+
+    var items = [
+      BottomNavigationBarItem(
+          tooltip: localizations.requests, icon: const Icon(Icons.workspaces_outlined), label: localizations.requests),
+      if (isDev)
+        BottomNavigationBarItem(
+            tooltip: localizations.toolbox, icon: const Icon(Icons.hardware_outlined), label: localizations.toolbox),
+      if (isDev)
+        BottomNavigationBarItem(
+            tooltip: localizations.config, icon: const Icon(Icons.description_outlined), label: localizations.config),
+      if (isDev)
+        BottomNavigationBarItem(
+            tooltip: localizations.setting, icon: const Icon(Icons.settings_outlined), label: localizations.setting),
+      BottomNavigationBarItem(
+          tooltip: localizations.logger, icon: const Icon(Icons.terminal_outlined), label: localizations.logger),
+      BottomNavigationBarItem(
+          tooltip: localizations.me, icon: const Icon(Icons.person_outlined), label: localizations.me),
     ];
 
     if (!widget.appConfiguration.bottomNavigation) _selectIndex.value = 0;
@@ -203,7 +237,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
             valueListenable: _selectIndex,
             builder: (context, index, child) => Scaffold(
                 body: IndexedStack(index: index, children: navigationView),
-                bottomNavigationBar: widget.appConfiguration.bottomNavigation
+                bottomNavigationBar: widget.appConfiguration.bottomNavigation && items.length > 1
                     ? Container(
                         constraints: const BoxConstraints(maxHeight: 85),
                         // padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
@@ -219,28 +253,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
                             selectedFontSize: 2,
                             unselectedFontSize: 2,
                             elevation: 0,
-                            items: [
-                              BottomNavigationBarItem(
-                                  tooltip: localizations.requests,
-                                  icon: const Icon(Icons.workspaces_outlined),
-                                  label: localizations.requests),
-                              BottomNavigationBarItem(
-                                  tooltip: localizations.toolbox,
-                                  icon: const Icon(Icons.hardware_outlined),
-                                  label: localizations.toolbox),
-                              BottomNavigationBarItem(
-                                  tooltip: localizations.config,
-                                  icon: const Icon(Icons.description_outlined),
-                                  label: localizations.config),
-                              BottomNavigationBarItem(
-                                  tooltip: localizations.setting,
-                                  icon: const Icon(Icons.settings_outlined),
-                                  label: localizations.setting),
-                              BottomNavigationBarItem(
-                                  tooltip: localizations.me,
-                                  icon: const Icon(Icons.person_outlined),
-                                  label: localizations.me),
-                            ],
+                            items: items,
                             currentIndex: _selectIndex.value,
                             onTap: (index) => _selectIndex.value = index,
                           ),
