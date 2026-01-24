@@ -21,7 +21,7 @@ class _LogPageState extends State<LogPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(localizations.logger, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
+        title: Text(localizations.logger),
         centerTitle: false, // 标题显示在左边
         actions: [
           IconButton(
