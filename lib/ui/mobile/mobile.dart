@@ -46,7 +46,7 @@ import 'package:proxypin/ui/mobile/request/list.dart';
 import 'package:proxypin/ui/mobile/request/search.dart';
 import 'package:proxypin/ui/mobile/widgets/pip.dart';
 import 'package:proxypin/ui/mobile/widgets/remote_device.dart';
-import 'package:proxypin/ui/mobile/request/log_page.dart';
+import 'package:proxypin/ui/mobile/dataswarm/log_page.dart';
 import 'package:proxypin/utils/ip.dart';
 import 'package:proxypin/utils/lang.dart';
 import 'package:proxypin/utils/listenable_list.dart';
@@ -160,9 +160,10 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
     bool isDev = SwarmProbeConfig.mode == 'dev';
 
     var navigationView = [
-      NavigatorPage(
-          navigatorKey: requestPageNavigatorKey,
-          child: RequestPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
+      if (isDev)
+        NavigatorPage(
+            navigatorKey: requestPageNavigatorKey,
+            child: RequestPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
       if (isDev)
         NavigatorPage(
             navigatorKey: toolboxNavigatorKey,
@@ -188,8 +189,11 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
     ];
 
     var items = [
-      BottomNavigationBarItem(
-          tooltip: localizations.requests, icon: const Icon(Icons.workspaces_outlined), label: localizations.requests),
+      if (isDev)
+        BottomNavigationBarItem(
+            tooltip: localizations.requests,
+            icon: const Icon(Icons.workspaces_outlined),
+            label: localizations.requests),
       if (isDev)
         BottomNavigationBarItem(
             tooltip: localizations.toolbox, icon: const Icon(Icons.hardware_outlined), label: localizations.toolbox),
