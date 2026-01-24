@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <!-- 传统全屏背景配置 -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+
+        <!-- Android 12+ Splash Screen 兼容配置 -->
+        <!-- 如果希望背景填满，我们让 SplashScreen 的背景透明或设为相同背景，并隐藏中间图标（如果需要） -->
+        <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/launch_background</item>
+    </style>
+
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+</resources>
