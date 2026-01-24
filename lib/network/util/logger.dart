@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:proxypin/ui/mobile/dataswarm/config.dart';
 
 final logger = Logger(
+    filter: ProductionFilter(),
     printer: PrettyPrinter(
       methodCount: 0,
       errorMethodCount: 15,
