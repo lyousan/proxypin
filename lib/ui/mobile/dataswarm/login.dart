@@ -76,6 +76,7 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
       if (mounted) {
         final appConfiguration = await AppConfiguration.instance;
         final configuration = await Configuration.instance;
+        SwarmProbeConfig.mode = 'user';
         // 登录成功后跳转到我的页面
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(

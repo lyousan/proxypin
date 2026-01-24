@@ -20,6 +20,9 @@ class DataSwarmMePage extends StatefulWidget {
 }
 
 class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListener {
+  int _debugClickCount = 0;
+  DateTime? _lastClickTime;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +45,35 @@ class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListe
       appBar: AppBar(
         title: const Text('我的'),
         actions: [
+          GestureDetector(
+            onTap: () {
+              final now = DateTime.now();
+              if (_lastClickTime == null || now.difference(_lastClickTime!) > const Duration(seconds: 2)) {
+                _debugClickCount = 1;
+              } else {
+                _debugClickCount++;
+              }
+              _lastClickTime = now;
+
+              if (_debugClickCount >= 7) {
+                _debugClickCount = 0;
+                String currentMode = SwarmProbeConfig.mode;
+                String newMode = currentMode == 'dev' ? 'user' : 'dev';
+                SwarmProbeConfig.mode = newMode;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(newMode == 'dev' ? '调试模式已开启' : '调试模式已关闭'),
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              }
+            },
+            child: Container(
+              width: 48,
+              height: 48,
+              color: Colors.transparent,
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
