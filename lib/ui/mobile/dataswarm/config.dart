@@ -19,7 +19,7 @@ class SwarmProbeConfig {
   SwarmProbeConfig._internal();
 
   // 服务器主机名
-  static String serverUrl = 'http://probe.dataswarm.com';
+  static String serverUrl = 'http://192.168.3.29:29357/ds';
   // 模式 dev/user
   static final ValueNotifier<String> modeNotifier = ValueNotifier('user'); // user/dev
   static String get mode => modeNotifier.value;
@@ -33,6 +33,11 @@ class SwarmProbeConfig {
   // report config url
   static Future<String> get configUrl async {
     return await wrapUrl('$serverUrl/config/report');
+  }
+
+  // report hertz url
+  static Future<String> get hertzUrl async {
+    return await wrapUrl('$serverUrl/hello');
   }
 
   static Future<String> wrapUrl(String url) async {

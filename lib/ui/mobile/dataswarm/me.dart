@@ -5,6 +5,7 @@ import 'package:proxypin/network/channel/channel_context.dart';
 import 'package:proxypin/network/http/http.dart';
 import 'package:proxypin/network/http/websocket.dart';
 import 'package:proxypin/ui/mobile/dataswarm/config.dart';
+import 'package:proxypin/ui/mobile/dataswarm/hertz.dart';
 import 'package:proxypin/ui/mobile/dataswarm/login.dart';
 import 'package:proxypin/ui/mobile/dataswarm/user.dart';
 
@@ -24,16 +25,19 @@ class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListe
     super.initState();
     widget.proxyServer.listeners.removeWhere((it) => it.runtimeType == runtimeType);
     widget.proxyServer.addListener(this);
+    Hertz.start();
+    ReportConfigManager.startTimer();
   }
 
   @override
   void dispose() {
+    Hertz.stop();
+    ReportConfigManager.stopTimer();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ReportConfigManager.startTimer();
     return Scaffold(
       appBar: AppBar(
         title: const Text('我的'),
@@ -41,6 +45,7 @@ class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListe
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
+              // logout
               final navigator = Navigator.of(context, rootNavigator: true);
               var userInfoMgr = await UserInfoManager.instance;
               await userInfoMgr.clearUserInfo();
