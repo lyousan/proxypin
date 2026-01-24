@@ -129,8 +129,8 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
                         ),
                         child: Image.asset(
                           'assets/icon_foreground.png',
-                          width: 80,
-                          height: 80,
+                          width: 100,
+                          height: 100,
                         ),
                       ),
                     ),

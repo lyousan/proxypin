@@ -26,7 +26,7 @@ import 'package:path_provider/path_provider.dart';
 /// 2024/1/1
 class ColorMapping {
   static final Map<String, Color> colors = {
-    "Blue": Colors.blue,
+    "Blue": const Color(0xFF2e59a7),
     "Pink": Colors.pink,
     "Red": Colors.red,
     "Purple": Colors.deepPurple,
