@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:proxypin/network/bin/configuration.dart';
 import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/ui/mobile/dataswarm/config.dart';
@@ -20,6 +21,11 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   // 登录逻辑预留
   Future<void> _handleLogin() async {
     final account = _accountController.text.trim();
@@ -37,12 +43,13 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
     });
 
     try {
+      var packageInfo = await PackageInfo.fromPlatform();
       final response = await http.post(
         Uri.parse(await SwarmProbeConfig.loginUrl), // 请在这里补充 URL
         headers: {
           'Content-Type': 'application/json',
           'X-Client': 'swarmprobe',
-          'X-Client-Ver': '1.2.4',
+          'X-Client-Ver': packageInfo.version,
         },
         body: jsonEncode({
           'account': account,
@@ -96,42 +103,156 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('DataSwarm 登录'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _accountController,
-              decoration: const InputDecoration(
-                labelText: '账号',
-                prefixIcon: Icon(Icons.person),
-                border: OutlineInputBorder(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 60),
+                    // 顶部 Logo
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1), // 浅蓝背景
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Image.asset(
+                          'assets/icon_foreground.png',
+                          width: 80,
+                          height: 80,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // 欢迎语
+                    Text(
+                      'Swarm Probe',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 48),
+                    // 输入框部分
+                    TextField(
+                      controller: _accountController,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        labelText: '账号',
+                        hintText: '请输入您的账号',
+                        prefixIcon: const Icon(Icons.person_outline),
+                        filled: true,
+                        fillColor: colorScheme.surfaceVariant.withOpacity(0.3),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _handleLogin(),
+                      decoration: InputDecoration(
+                        labelText: '密码',
+                        hintText: '请输入您的密码',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        filled: true,
+                        fillColor: colorScheme.surfaceVariant.withOpacity(0.3),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    // 登录按钮
+                    FilledButton(
+                      onPressed: _isLoading ? null : _handleLogin,
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: colorScheme.onPrimary,
+                              ),
+                            )
+                          : const Text(
+                              '登 录',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                    ),
+                    const SizedBox(height: 24),
+                    // 底部辅助信息（可选）
+                    TextButton(
+                      onPressed: () {
+                        // 这里可以放找回密码或联系管理员
+                      },
+                      child: Text(
+                        '遇到问题？联系管理员',
+                        style: TextStyle(color: colorScheme.primary),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: '密码',
-                prefixIcon: Icon(Icons.lock),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
-                child:
-                    _isLoading ? const CircularProgressIndicator() : const Text('登录', style: TextStyle(fontSize: 18)),
-              ),
+            // 底部版本号
+            FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    snapshot.hasData ? 'V${snapshot.data!.version}' : '',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 71, 122, 164),
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),

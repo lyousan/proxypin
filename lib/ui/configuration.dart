@@ -50,7 +50,7 @@ class ColorMapping {
 class ThemeModel {
   ThemeMode mode;
   bool useMaterial3;
-  String color = "Orange";
+  String color = "Blue";
 
   ThemeModel({this.mode = ThemeMode.system, this.useMaterial3 = true});
 
@@ -197,7 +197,7 @@ class AppConfiguration {
       var mode =
           ThemeMode.values.firstWhere((element) => element.name == config['mode'], orElse: () => ThemeMode.system);
       _theme = ThemeModel(mode: mode, useMaterial3: config['useMaterial3'] ?? true);
-      _theme.color = config['themeColor'] ?? "Orange";
+      _theme.color = config['themeColor'] ?? "Blue";
 
       upgradeNoticeV24 = config['upgradeNoticeV24'] ?? true;
       _language = config['language'] == null
