@@ -131,7 +131,7 @@ class _ReportServersPageMobileState extends State<ReportServersPageMobile> {
                                 await _load();
                               })),
                       title: Text(s.name.isEmpty ? '-' : s.name),
-                      subtitle: Text(s.serverUrl),
+                      subtitle: Text(s.rawServerUrl.isEmpty ? '-' : s.rawServerUrl),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -174,7 +174,7 @@ class _ReportServerEditPageMobileState extends State<ReportServerEditPageMobile>
     final init = widget.initial;
     _nameCtrl = TextEditingController(text: init?.name ?? '');
     _matchUrlCtrl = TextEditingController(text: init?.matchUrl ?? '');
-    _serverUrlCtrl = TextEditingController(text: init?.serverUrl ?? '');
+    _serverUrlCtrl = TextEditingController(text: init?.rawServerUrl ?? '');
     _compression = init?.compression ?? 'none';
     _enabled = init?.enabled ?? true;
   }

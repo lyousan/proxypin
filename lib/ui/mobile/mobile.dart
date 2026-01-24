@@ -164,7 +164,11 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
       NavigatorPage(
           navigatorKey: settingNavigatorKey,
           child: SettingPage(proxyServer: proxyServer, appConfiguration: widget.appConfiguration)),
-      NavigatorPage(navigatorKey: meNavigatorKey, child: DataSwarmMePage()),
+      NavigatorPage(
+          navigatorKey: meNavigatorKey,
+          child: DataSwarmMePage(
+            proxyServer: proxyServer,
+          )),
     ];
 
     if (!widget.appConfiguration.bottomNavigation) _selectIndex.value = 0;

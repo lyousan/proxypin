@@ -61,10 +61,10 @@ class ReportServerInterceptor extends Interceptor {
     }
 
     try {
-      logger.i("reportServer start: $requestUrl -> ${server.name} (${server.serverUrl})");
+      var serverUrl = (await server.serverUrl).trim();
+      logger.i("reportServer start: $requestUrl -> ${server.name} ($serverUrl)");
 
       // Prepare server URL (ensure scheme)
-      var serverUrl = (server.serverUrl).trim();
       if (serverUrl.isEmpty) {
         logger.w('reportServer skipped: serverUrl empty for ${server.name}');
         return;

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:proxypin/ui/mobile/dataswarm/config.dart';
+
 import '../../../storage/path.dart';
 import '../../util/logger.dart';
 
@@ -23,6 +25,10 @@ class ReportServerManager {
   /// Get configured report servers
   List<ReportServer> get servers => _list;
 
+  set servers(List<ReportServer> list) {
+    _list = list;
+  }
+
   Future<ReportServer?> matchServer(String url) async {
     final list = servers;
     for (var server in list) {
@@ -34,6 +40,10 @@ class ReportServerManager {
   }
 
   Future<void> add(ReportServer server) async {
+    final list = servers;
+    if (list.contains(server)) {
+      return;
+    }
     _list.add(server);
     await _flush();
   }
@@ -48,6 +58,11 @@ class ReportServerManager {
     final list = servers;
     server.updateUrlReg();
     list[index] = server;
+    await _flush();
+  }
+
+  Future<void> clear() async {
+    _list.clear();
     await _flush();
   }
 
@@ -88,7 +103,7 @@ class ReportServer {
   final String matchUrl;
 
   /// 服务器URL
-  final String serverUrl;
+  final String _serverUrl;
 
   /// 是否启用
   final bool enabled;
@@ -97,14 +112,20 @@ class ReportServer {
   final String? compression;
 
   RegExp _urlReg;
+  Future<String> get serverUrl async {
+    return await SwarmProbeConfig.wrapUrl(_serverUrl);
+  }
+
+  String get rawServerUrl => _serverUrl;
 
   ReportServer({
     required this.name,
     required this.matchUrl,
-    required this.serverUrl,
+    required String serverUrl,
     this.enabled = true,
     this.compression,
-  }) : _urlReg = RegExp(matchUrl.replaceAll("*", ".*").replaceFirst('?', '\\?'));
+  })  : _serverUrl = serverUrl,
+        _urlReg = RegExp(matchUrl.replaceAll("*", ".*").replaceFirst('?', '\\?'));
 
   bool match(String url) {
     if (enabled) {
@@ -129,7 +150,7 @@ class ReportServer {
     return ReportServer(
       name: name ?? this.name,
       matchUrl: matchUrl ?? this.matchUrl,
-      serverUrl: serverUrl ?? this.serverUrl,
+      serverUrl: serverUrl ?? _serverUrl,
       enabled: enabled ?? this.enabled,
       compression: compression ?? this.compression,
     );
@@ -149,9 +170,18 @@ class ReportServer {
     return {
       'name': name,
       'matchUrl': matchUrl,
-      'serverUrl': serverUrl,
+      'serverUrl': _serverUrl,
       'enabled': enabled,
       'compression': compression,
     };
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ReportServer && other.name == name && other._serverUrl == _serverUrl;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ _serverUrl.hashCode;
 }

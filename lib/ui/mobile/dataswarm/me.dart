@@ -1,12 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:proxypin/network/bin/server.dart';
+import 'package:proxypin/network/channel/channel.dart';
+import 'package:proxypin/network/channel/channel_context.dart';
+import 'package:proxypin/network/http/http.dart';
+import 'package:proxypin/network/http/websocket.dart';
+import 'package:proxypin/ui/mobile/dataswarm/config.dart';
 import 'package:proxypin/ui/mobile/dataswarm/login.dart';
 import 'package:proxypin/ui/mobile/dataswarm/user.dart';
 
-class DataSwarmMePage extends StatelessWidget {
-  const DataSwarmMePage({super.key});
+import '../../../network/bin/listener.dart';
+
+class DataSwarmMePage extends StatefulWidget {
+  final ProxyServer proxyServer;
+  const DataSwarmMePage({super.key, required this.proxyServer});
+
+  @override
+  State<DataSwarmMePage> createState() => _DataSwarmMePageState();
+}
+
+class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListener {
+  @override
+  void initState() {
+    super.initState();
+    widget.proxyServer.listeners.removeWhere((it) => it.runtimeType == runtimeType);
+    widget.proxyServer.addListener(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    ReportConfigManager.startTimer();
     return Scaffold(
       appBar: AppBar(
         title: const Text('我的'),
@@ -50,5 +77,20 @@ class DataSwarmMePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void onMessage(Channel channel, HttpMessage message, WebSocketFrame frame) {
+    // TODO: implement onMessage
+  }
+
+  @override
+  void onRequest(Channel channel, HttpRequest request) {
+    // TODO: implement onRequest
+  }
+
+  @override
+  void onResponse(ChannelContext channelContext, HttpResponse response) {
+    // TODO: implement onResponse
   }
 }

@@ -79,7 +79,7 @@ class _ReportServersPageState extends State<ReportServersPage> {
   Future<ReportServer?> _showServerDialog({ReportServer? initial}) async {
     final nameCtrl = TextEditingController(text: initial?.name ?? '');
     final matchUrlCtrl = TextEditingController(text: initial?.matchUrl ?? '');
-    final serverUrlCtrl = TextEditingController(text: initial?.serverUrl ?? '');
+    final serverUrlCtrl = TextEditingController(text: initial?.rawServerUrl ?? '');
     String compression = initial?.compression ?? 'none';
     bool enabled = initial?.enabled ?? true;
 
@@ -243,7 +243,6 @@ class _ReportServersPageState extends State<ReportServersPage> {
         title: Text(localizations.reportServers),
         centerTitle: true,
         actions: [
-
           TextButton.icon(
             label: Text(localizations.newBuilt),
             onPressed: _addServerDialog,
@@ -253,7 +252,7 @@ class _ReportServersPageState extends State<ReportServersPage> {
           IconButton(
             tooltip: localizations.useGuide,
             onPressed: _openGuide,
-            icon: const Icon(Icons.help_outline,size: 21),
+            icon: const Icon(Icons.help_outline, size: 21),
           ),
           IconButton(
             tooltip: localizations.close,
@@ -325,8 +324,9 @@ class _ReportServersPageState extends State<ReportServersPage> {
                                   SizedBox(
                                     width: 155,
                                     child: Tooltip(
-                                      message: entry.value.serverUrl,
-                                      child: Text(entry.value.serverUrl, overflow: TextOverflow.ellipsis, maxLines: 1),
+                                      message: entry.value.rawServerUrl,
+                                      child:
+                                          Text(entry.value.rawServerUrl, overflow: TextOverflow.ellipsis, maxLines: 1),
                                     ),
                                   ),
                                   onTap: () => _editServerDialog(entry.key)),

@@ -38,7 +38,7 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
 
     try {
       final response = await http.post(
-        Uri.parse(SwarmProbeConfig().loginUrl), // 请在这里补充 URL
+        Uri.parse(await SwarmProbeConfig.loginUrl), // 请在这里补充 URL
         headers: {
           'Content-Type': 'application/json',
           'X-Client': 'swarmprobe',
