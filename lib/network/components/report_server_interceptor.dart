@@ -17,9 +17,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:zstandard/zstandard.dart';
 import 'package:proxypin/network/util/compress.dart';
 import 'package:proxypin/network/util/logger.dart';
+import 'package:proxypin/ui/mobile/dataswarm/common.dart';
 import 'package:proxypin/utils/har.dart';
 
 import '../http/http.dart';
@@ -30,7 +33,7 @@ import 'manager/report_server_manager.dart';
 /// @author wanghongen
 class ReportServerInterceptor extends Interceptor {
   Future<ReportServerManager> get reportServerManager async => await ReportServerManager.instance;
-
+  final zstandard = Zstandard();
   static HttpClient httpClient = HttpClient();
 
   @override
@@ -87,11 +90,22 @@ class ReportServerInterceptor extends Interceptor {
           logger.w('reportServer gzip compress failed: $e');
         }
       }
+      if (compression == 'zstd') {
+        try {
+          body = (await zstandard.compress(Uint8List.fromList(body), 3)) ?? body;
+        } catch (e) {
+          logger.w('reportServer zstd compress failed: $e');
+        }
+      }
 
       // Send POST
       final ioReq = await httpClient.postUrl(uri).timeout(const Duration(seconds: 5));
 
       // Set headers
+      var dataswarmHeaders = await baseHeaders();
+      dataswarmHeaders.forEach((key, value) {
+        ioReq.headers.set(key, value);
+      });
       final matchedRule = server.name;
       if (matchedRule.isNotEmpty) {
         ioReq.headers.set('X-Report-Name', matchedRule);
@@ -100,6 +114,9 @@ class ReportServerInterceptor extends Interceptor {
       ioReq.headers.set(HttpHeaders.contentTypeHeader, 'application/json; charset=utf-8');
       if (compression == 'gzip') {
         ioReq.headers.set(HttpHeaders.contentEncodingHeader, 'gzip');
+      }
+      if (compression == 'zstd') {
+        ioReq.headers.set(HttpHeaders.contentEncodingHeader, 'zstd');
       }
 
       // Write body and close

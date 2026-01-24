@@ -5,7 +5,7 @@ final logger = Logger(
       methodCount: 0,
       errorMethodCount: 15,
       lineLength: 120,
-      colors: false,
+      colors: true,
       printEmojis: false,
       dateTimeFormat: DateTimeFormat.onlyTime,
       excludeBox: {Level.info: true, Level.debug: true},
