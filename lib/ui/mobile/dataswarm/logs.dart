@@ -19,14 +19,7 @@ class LogListWidgetState extends State<LogListWidget> {
   @override
   void initState() {
     super.initState();
-    // 初始化时对已有日志进行过滤
-    logs = AppLogOutput.logs.where((event) {
-      if (SwarmProbeConfig.mode == 'user') {
-        if (event.level != Level.info) return false;
-        return event.lines.any((line) => line.startsWith("biz:"));
-      }
-      return true;
-    }).toList();
+    logs = AppLogOutput.logs;
 
     AppLogOutput.addListener(_onLog);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -48,22 +41,6 @@ class LogListWidgetState extends State<LogListWidget> {
           logs = [];
         });
         return;
-      }
-
-      // 过滤逻辑：当 mode 为 user 时，只显示 info 级别且以 biz:: 开头的日志
-      if (SwarmProbeConfig.mode == 'user') {
-        if (event.level != Level.info) {
-          return;
-        }
-        bool hasBizPrefix = event.lines.any((line) => line.startsWith("biz:"));
-        if (!hasBizPrefix) {
-          return;
-        }
-        for (int i = 0; i < event.lines.length; i++) {
-          if (event.lines[i].startsWith("biz:")) {
-            event.lines[i] = event.lines[i].replaceFirst("biz:", "");
-          }
-        }
       }
 
       setState(() {

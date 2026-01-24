@@ -272,22 +272,6 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
   }
 
   Future<bool> enterPictureInPicture() async {
-    if (Vpn.isVpnStarted) {
-      if (!Platform.isAndroid || !(await (AppConfiguration.instance)).pipEnabled.value) {
-        return false;
-      }
-
-      List<String>? appList =
-          proxyServer.configuration.appWhitelistEnabled ? proxyServer.configuration.appWhitelist : [];
-      List<String>? disallowApps;
-      if (appList.isEmpty) {
-        disallowApps = proxyServer.configuration.appBlacklist ?? [];
-      }
-
-      return PictureInPicture.enterPictureInPictureMode(
-          Platform.isAndroid ? await localIp() : "127.0.0.1", proxyServer.port,
-          appList: appList, disallowApps: disallowApps);
-    }
     return false;
   }
 
@@ -307,10 +291,10 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
 
     if (!isInPictureInPictureMode) {
       Navigator.maybePop(context);
-      Vpn.isRunning().then((value) {
-        Vpn.isVpnStarted = value;
-        SocketLaunch.startStatus.value = ValueWrap.of(value);
-      });
+      // Vpn.isRunning().then((value) {
+      //   Vpn.isVpnStarted = value;
+      //   SocketLaunch.startStatus.value = ValueWrap.of(value);
+      // });
     }
   }
 
@@ -410,7 +394,7 @@ class RequestPageState extends State<RequestPage> {
         drawer: widget.appConfiguration.bottomNavigation
             ? null
             : DrawerWidget(proxyServer: proxyServer, container: MobileApp.container),
-        floatingActionButton: _launchActionButton(),
+        // floatingActionButton: _launchActionButton(),
         body: ValueListenableBuilder(
             valueListenable: remoteDevice,
             builder: (context, value, _) {
@@ -422,40 +406,7 @@ class RequestPageState extends State<RequestPage> {
               ]);
             }),
       ),
-      PictureInPictureIcon(proxyServer),
     ]);
-  }
-
-  Widget _launchActionButton() {
-    var theme = Theme.of(context);
-    return Theme(
-        data: ThemeData.from(colorScheme: theme.colorScheme, textTheme: theme.textTheme, useMaterial3: true),
-        child: FloatingActionButton(
-          onPressed: null,
-          backgroundColor: theme.colorScheme.primaryContainer,
-          child: SocketLaunch(
-              proxyServer: proxyServer,
-              size: 36,
-              startup: proxyServer.configuration.startup,
-              serverLaunch: false,
-              onStart: () async {
-                String host = Platform.isAndroid ? await localIp(readCache: false) : "127.0.0.1";
-                int port = proxyServer.port;
-                if (Platform.isIOS) {
-                  await proxyServer.retryBind();
-                }
-
-                if (remoteDevice.value.ipProxy == true) {
-                  host = remoteDevice.value.host!;
-                  port = remoteDevice.value.port!;
-                }
-
-                // Vpn.startVpn(host, port, proxyServer.configuration, ipProxy: remoteDevice.value.ipProxy);
-              },
-              onStop: () => {
-                    // Vpn.stopVpn()
-                  }),
-        ));
   }
 
   /// 远程连接

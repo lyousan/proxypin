@@ -20,9 +20,10 @@ import 'package:proxypin/l10n/app_localizations.dart';
 import 'package:proxypin/native/pip.dart';
 import 'package:proxypin/network/bin/server.dart';
 import 'package:proxypin/network/http/http.dart';
+import 'package:logger/logger.dart';
+import 'package:proxypin/network/util/logger.dart';
 import 'package:proxypin/ui/configuration.dart';
 import 'package:proxypin/utils/ip.dart';
-import 'package:proxypin/utils/lang.dart';
 import 'package:proxypin/utils/listenable_list.dart';
 
 /// Picture in Picture Window
@@ -38,51 +39,71 @@ class PictureInPictureWindow extends StatefulWidget {
 class _PictureInPictureWindowState extends State<PictureInPictureWindow> {
   AppLocalizations get localizations => AppLocalizations.of(context)!;
 
-  OnchangeListEvent<HttpRequest>? changeEvent;
+  void _onLog(OutputEvent event) {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    changeEvent = OnchangeListEvent(() {
-      setState(() {});
-    });
-    widget.container.addListener(changeEvent!);
+    AppLogOutput.addListener(_onLog);
   }
 
   @override
   void dispose() {
-    widget.container.removeListener(changeEvent!);
+    AppLogOutput.removeListener(_onLog);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.container.isEmpty) {
+    var logs = AppLogOutput.logs;
+    if (logs.isEmpty) {
       return Material(child: Center(child: Text(localizations.emptyData, style: const TextStyle(color: Colors.grey))));
     }
 
     return Material(
         child: ListView.separated(
             padding: const EdgeInsets.only(left: 2),
-            itemCount: widget.container.length,
+            itemCount: logs.length,
             separatorBuilder: (context, index) => const Divider(thickness: 0.3, height: 0.5),
             itemBuilder: (context, index) {
+              var event = logs[logs.length - index - 1];
               return Text.rich(
                   overflow: TextOverflow.ellipsis,
                   TextSpan(
-                      text: widget.container.elementAt(widget.container.length - index - 1).requestUrl.fixAutoLines(),
-                      style: const TextStyle(fontSize: 9)),
-                  maxLines: 2);
+                      text: event.lines.join('\n'),
+                      style: TextStyle(
+                        fontSize: 8,
+                        color: _getLevelColor(event.level),
+                      )),
+                  maxLines: 5);
             }));
+  }
+
+  Color _getLevelColor(Level level) {
+    switch (level) {
+      case Level.debug:
+      case Level.trace:
+        return Colors.grey;
+      case Level.info:
+        return Colors.blue;
+      case Level.warning:
+        return Colors.orange;
+      case Level.error:
+      case Level.fatal:
+        return Colors.red;
+      default:
+        return Colors.black;
+    }
   }
 }
 
 /// pip Icon
 class PictureInPictureIcon extends StatefulWidget {
-  final ProxyServer proxyServer;
-
-  const PictureInPictureIcon(
-    this.proxyServer, {
+  const PictureInPictureIcon({
     super.key,
   });
 
@@ -141,16 +162,7 @@ class _PictureInPictureState extends State<PictureInPictureIcon> {
           child: IconButton(
               tooltip: localizations.windowMode,
               onPressed: () async {
-                var configuration = widget.proxyServer.configuration;
-                List<String>? appList = configuration.appWhitelistEnabled ? configuration.appWhitelist : [];
-                List<String>? disallowApps;
-                if (appList.isEmpty) {
-                  disallowApps = configuration.appBlacklist ?? [];
-                }
-
-                PictureInPicture.enterPictureInPictureMode(
-                    Platform.isAndroid ? await localIp() : "127.0.0.1", widget.proxyServer.port,
-                    appList: appList, disallowApps: disallowApps);
+                PictureInPicture.enterPictureInPictureMode();
               },
               icon: const Icon(Icons.picture_in_picture_alt))),
     );

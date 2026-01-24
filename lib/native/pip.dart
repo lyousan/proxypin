@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:proxypin/native/vpn.dart';
 import 'package:proxypin/network/util/logger.dart';
-import 'package:proxypin/ui/launch/launch.dart';
-import 'package:proxypin/ui/mobile/mobile.dart';
+import 'package:proxypin/ui/mobile/dataswarm/log_page.dart';
 import 'package:proxypin/utils/lang.dart';
 
 ///画中画
@@ -15,23 +13,17 @@ class PictureInPicture {
     ..setMethodCallHandler((call) async {
       logger.d("pictureInPicture MethodCallHandler ${call.method}");
       if (call.method == 'cleanSession') {
-        MobileApp.requestStateKey.currentState?.clean();
+        LogPageState.clear();
       } else if (call.method == 'exitPictureInPictureMode') {
         inPip = false;
-        Vpn.isRunning().then((value) {
-          Vpn.isVpnStarted = value;
-          SocketLaunch.startStatus.value = ValueWrap.of(value);
-        });
       }
 
       return Future.value();
     });
 
   ///进入画中画模式
-  static Future<bool> enterPictureInPictureMode(String host, int port,
-      {List<String>? appList, List<String>? disallowApps}) async {
-    final bool enterPictureInPictureMode = await _channel.invokeMethod('enterPictureInPictureMode',
-        {"proxyHost": host, "proxyPort": port, "allowApps": appList, "disallowApps": disallowApps});
+  static Future<bool> enterPictureInPictureMode() async {
+    final bool enterPictureInPictureMode = await _channel.invokeMethod('enterPictureInPictureMode');
     inPip = true;
 
     return enterPictureInPictureMode;

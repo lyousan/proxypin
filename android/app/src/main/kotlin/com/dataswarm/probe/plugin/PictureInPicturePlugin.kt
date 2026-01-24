@@ -22,10 +22,6 @@ import androidx.core.content.ContextCompat
 class PictureInPicturePlugin : AndroidFlutterPlugin() {
     private var registerBroadcast = false
     var channel: MethodChannel? = null
-    var proxyHost: String? = null
-    var proxyPort: Int? = null
-    var allowApps: ArrayList<String>? = null
-    var disallowApps: ArrayList<String>? = null
 
     ///广播事件接受者
     private val vpnBroadcastReceiver = object : BroadcastReceiver() {
@@ -40,29 +36,6 @@ class PictureInPicturePlugin : AndroidFlutterPlugin() {
                 return
             }
 
-            val isRunning = ProxyVpnService.isRunning
-
-            if (isRunning) {
-                activity.startService(ProxyVpnService.stopVpnIntent(activity))
-            } else {
-                val prepareVpn = ProxyVpnService.prepareVpn(activity, proxyHost!!, proxyPort!!, allowApps, disallowApps)
-                if (prepareVpn) {
-                    activity.startService(
-                        ProxyVpnService.startVpnIntent(
-                            activity,
-                            proxyHost,
-                            proxyPort,
-                            allowApps,
-                            disallowApps
-                        )
-                    )
-                }
-            }
-
-            //设置画中画参数
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                updatePictureInPictureParams(!isRunning)
-            }
         }
     }
 
@@ -78,12 +51,9 @@ class PictureInPicturePlugin : AndroidFlutterPlugin() {
             when (call.method) {
                 "enterPictureInPictureMode" -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        proxyHost = call.argument<String>("proxyHost")
-                        proxyPort = call.argument<Int>("proxyPort")
-                        allowApps = call.argument<ArrayList<String>>("allowApps")
-                        disallowApps = call.argument<ArrayList<String>>("disallowApps")
+                        
 
-                        val param = updatePictureInPictureParams(ProxyVpnService.isRunning)
+                        val param = updatePictureInPictureParams(true)
                         if (!registerBroadcast) {
                             registerBroadcast = true
                             ContextCompat.registerReceiver(

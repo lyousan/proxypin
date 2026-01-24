@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:proxypin/ui/mobile/dataswarm/config.dart';
 
 final logger = Logger(
     printer: PrettyPrinter(
@@ -8,7 +9,7 @@ final logger = Logger(
       colors: true,
       printEmojis: false,
       dateTimeFormat: DateTimeFormat.onlyTime,
-      excludeBox: {Level.info: true, Level.debug: true},
+      excludeBox: {Level.info: true, Level.debug: true, Level.verbose: true, Level.warning: true, Level.error: true},
     ),
     output: MultiOutput([
       ConsoleOutput(),
@@ -35,6 +36,26 @@ class AppLogOutput extends LogOutput {
 
   @override
   void output(OutputEvent event) {
+    // 移除 颜色 转义序列
+    for (int i = 0; i < event.lines.length; i++) {
+      event.lines[i] = event.lines[i].replaceAll(RegExp(r'\x1B\[[0-9;]*m'), '');
+    }
+    // 过滤逻辑：当 mode 为 user 时，只显示 info 级别且以 biz:: 开头的日志
+    if (SwarmProbeConfig.mode == 'user') {
+      if (event.level != Level.info) {
+        return;
+      }
+
+      bool hasBizPrefix = event.lines.any((line) => line.contains("biz:"));
+      if (!hasBizPrefix) {
+        return;
+      }
+      for (int i = 0; i < event.lines.length; i++) {
+        if (event.lines[i].startsWith("biz:")) {
+          event.lines[i] = event.lines[i].replaceFirst("biz:", "");
+        }
+      }
+    }
     logs.add(event);
     if (logs.length > 1000) {
       logs.removeAt(0);
