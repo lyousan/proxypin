@@ -124,7 +124,7 @@ class ReportServerInterceptor extends Interceptor {
       final ioResp = await ioReq.close().timeout(const Duration(seconds: 30));
       final respText = await ioResp.transform(utf8.decoder).join();
       if (ioResp.statusCode >= 200 && ioResp.statusCode < 300) {
-        logger.i('reportServer delivered to ${server.name} (${uri.toString()}), status=${ioResp.statusCode}');
+        logger.i('reportServer delivered to ${server.name}, status=${ioResp.statusCode}, body=$respText');
         logger.biz("success");
       } else {
         logger.w('reportServer delivery to ${server.name} failed, status=${ioResp.statusCode}, body=$respText');
