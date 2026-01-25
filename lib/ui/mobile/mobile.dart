@@ -90,7 +90,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
 
   @override
   void onRequest(Channel channel, HttpRequest request) {
-    MobileApp.requestStateKey.currentState!.add(channel, request);
+    MobileApp.requestStateKey.currentState?.add(channel, request);
     PictureInPicture.addData(request.requestUrl);
 
     //监控内存 到达阈值清理
@@ -101,7 +101,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
 
   @override
   void onResponse(ChannelContext channelContext, HttpResponse response) {
-    MobileApp.requestStateKey.currentState!.addResponse(channelContext, response);
+    MobileApp.requestStateKey.currentState?.addResponse(channelContext, response);
   }
 
   @override
