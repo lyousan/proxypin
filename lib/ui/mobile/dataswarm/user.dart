@@ -6,11 +6,15 @@ class UserInfo {
   final String account;
   final String? avatar;
   final String token;
+  final String username;
+  final String? joinDate;
 
   UserInfo({
     required this.account,
+    required this.username,
     required this.token,
     this.avatar,
+    this.joinDate,
   });
 
   /// 从 JSON 构造
@@ -19,6 +23,8 @@ class UserInfo {
       account: json['account'],
       avatar: json['avatar'],
       token: json['token'],
+      username: json['username'],
+      joinDate: json['joinDate'],
     );
   }
 
@@ -28,6 +34,8 @@ class UserInfo {
       'account': account,
       'avatar': avatar,
       'token': token,
+      'username': username,
+      'joinDate': joinDate,
     };
   }
 }

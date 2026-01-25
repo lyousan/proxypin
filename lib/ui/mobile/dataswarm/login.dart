@@ -67,9 +67,14 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
         }
         return;
       } else {
-        var token = body['access_token'];
         // 保存用户信息到本地
-        var userInfo = UserInfo(account: account, token: token);
+        var userInfo = UserInfo(
+          account: account,
+          token: body['data']['access_token'],
+          username: body['data']['username'],
+          joinDate: body['data']['join_date'],
+          avatar: body['data']['avatar'],
+        );
         var userInfoMgr = await UserInfoManager.instance;
         await userInfoMgr.saveUserInfo(userInfo);
       }
