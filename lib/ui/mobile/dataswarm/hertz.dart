@@ -41,12 +41,12 @@ class Hertz {
 
       final Map<String, dynamic> body = {
         'timestamp': DateTime.now().millisecondsSinceEpoch,
-        'mode': SwarmProbeConfig.mode,
+        'mode': SwarmForagerConfig.mode,
       };
 
       final response = await http
           .post(
-            Uri.parse(await SwarmProbeConfig.hertzUrl),
+            Uri.parse(await SwarmForagerConfig.hertzUrl),
             headers: {
               ...headers,
               'Content-Type': 'application/json',

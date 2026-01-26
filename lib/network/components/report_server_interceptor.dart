@@ -19,6 +19,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:proxypin/network/components/swarm.dart';
 import 'package:zstandard/zstandard.dart';
 import 'package:proxypin/network/util/compress.dart';
 import 'package:proxypin/network/util/logger.dart';
@@ -102,6 +103,7 @@ class ReportServerInterceptor extends Interceptor {
       final ioReq = await httpClient.postUrl(uri).timeout(const Duration(seconds: 5));
 
       // Set headers
+      ioReq.headers.set("task", SwarmInterceptor.rawTask);
       var dataswarmHeaders = await baseHeaders();
       dataswarmHeaders.forEach((key, value) {
         ioReq.headers.set(key, value);

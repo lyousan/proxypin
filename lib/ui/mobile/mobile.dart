@@ -122,7 +122,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
     proxyServer.start();
     // 保持屏幕常亮
     WakelockPlus.enable();
-    SwarmProbeConfig.modeNotifier.addListener(_onModeChange);
+    SwarmForagerConfig.modeNotifier.addListener(_onModeChange);
 
     if (widget.appConfiguration.upgradeNoticeV24) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -137,7 +137,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
   @override
   void dispose() {
     AppLifecycleBinding.instance.removeListener(this);
-    SwarmProbeConfig.modeNotifier.removeListener(_onModeChange);
+    SwarmForagerConfig.modeNotifier.removeListener(_onModeChange);
     super.dispose();
   }
 
@@ -158,7 +158,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
 
   @override
   Widget build(BuildContext context) {
-    bool isDev = SwarmProbeConfig.mode == 'dev';
+    bool isDev = SwarmForagerConfig.mode == 'dev';
 
     var navigationView = [
       if (isDev)

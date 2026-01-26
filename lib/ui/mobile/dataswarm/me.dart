@@ -57,9 +57,9 @@ class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListe
 
               if (_debugClickCount >= 7) {
                 _debugClickCount = 0;
-                String currentMode = SwarmProbeConfig.mode;
+                String currentMode = SwarmForagerConfig.mode;
                 String newMode = currentMode == 'dev' ? 'user' : 'dev';
-                SwarmProbeConfig.mode = newMode;
+                SwarmForagerConfig.mode = newMode;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(newMode == 'dev' ? '调试模式已开启' : '调试模式已关闭'),

@@ -113,7 +113,7 @@ class ReportServer {
 
   RegExp _urlReg;
   Future<String> get serverUrl async {
-    return await SwarmProbeConfig.wrapUrl(_serverUrl);
+    return await SwarmForagerConfig.wrapUrl(_serverUrl);
   }
 
   String get rawServerUrl => _serverUrl;

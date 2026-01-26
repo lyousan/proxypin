@@ -42,7 +42,7 @@ class AppLogOutput extends LogOutput {
       event.lines[i] = event.lines[i].replaceAll(RegExp(r'\x1B\[[0-9;]*m'), '');
     }
     // 过滤逻辑：当 mode 为 user 时，只显示 info 级别且以 biz:: 开头的日志
-    if (SwarmProbeConfig.mode == 'user') {
+    if (SwarmForagerConfig.mode == 'user') {
       if (event.level != Level.info) {
         return;
       }

@@ -14,12 +14,12 @@ import 'package:proxypin/utils/navigator.dart';
 import 'package:proxypin/ui/mobile/dataswarm/common.dart' as common;
 
 /// 全局配置类，单例模式
-class SwarmProbeConfig {
+class SwarmForagerConfig {
   // 私有构造函数
-  SwarmProbeConfig._internal();
+  SwarmForagerConfig._internal();
 
   // 服务器主机名
-  static String serverUrl = 'http://192.168.3.29:29357/ds';
+  static String serverUrl = 'http://bodtok.com/ds';
   // 模式 dev/user
   static final ValueNotifier<String> modeNotifier = ValueNotifier('user'); // user/dev
   static String get mode => modeNotifier.value;
@@ -33,6 +33,11 @@ class SwarmProbeConfig {
   // report config url
   static Future<String> get configUrl async {
     return await wrapUrl('$serverUrl/config/report');
+  }
+
+  // pull task url
+  static Future<String> get pullTaskUrl async {
+    return await wrapUrl('$serverUrl/task/pull');
   }
 
   // report hertz url
@@ -81,7 +86,7 @@ class ReportConfigManager {
 
   // 拉取配置
   static Future<void> pullReportConfig() async {
-    final response = await http.get(Uri.parse(await SwarmProbeConfig.configUrl), headers: await common.baseHeaders());
+    final response = await http.get(Uri.parse(await SwarmForagerConfig.configUrl), headers: await common.baseHeaders());
     if (response.statusCode != 200) {
       if (NavigatorHelper().context.mounted) {
         FlutterToastr.show('拉取上报配置失败 ${response.statusCode}', NavigatorHelper().context);

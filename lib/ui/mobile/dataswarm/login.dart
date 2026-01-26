@@ -45,10 +45,10 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
     try {
       var packageInfo = await PackageInfo.fromPlatform();
       final response = await http.post(
-        Uri.parse(await SwarmProbeConfig.loginUrl), // 请在这里补充 URL
+        Uri.parse(await SwarmForagerConfig.loginUrl), // 请在这里补充 URL
         headers: {
           'Content-Type': 'application/json',
-          'X-Client': 'swarmprobe',
+          'X-Client': 'swarmforager',
           'X-Client-Ver': packageInfo.version,
         },
         body: jsonEncode({
@@ -81,7 +81,7 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
       if (mounted) {
         final appConfiguration = await AppConfiguration.instance;
         final configuration = await Configuration.instance;
-        SwarmProbeConfig.mode = 'user';
+        SwarmForagerConfig.mode = 'user';
         // 登录成功后跳转到我的页面
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
@@ -142,7 +142,7 @@ class _DataSwarmLoginPageState extends State<DataSwarmLoginPage> {
                     const SizedBox(height: 32),
                     // 欢迎语
                     Text(
-                      'Swarm Probe',
+                      'Swarm Forager',
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: colorScheme.onSurface,

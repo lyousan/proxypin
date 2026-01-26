@@ -58,7 +58,7 @@ class LogPageState extends State<LogPage> {
                               //   padding: const EdgeInsets.only(top: 10.0), // 设置上边距为 10
                               //   child: Text("任务中心:", style: TextStyle(fontSize: 18)),
                               // ),
-                              // SelectableText(SwarmProbeConfig.serverUrl, style: TextStyle(fontSize: 18))
+                              // SelectableText(SwarmForagerConfig.serverUrl, style: TextStyle(fontSize: 18))
                             ],
                           ),
                           actions: [

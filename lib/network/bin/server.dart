@@ -18,6 +18,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:proxypin/network/bin/configuration.dart';
+import 'package:proxypin/network/components/swarm.dart';
 import 'package:proxypin/network/components/hosts.dart';
 import 'package:proxypin/network/components/interceptor.dart';
 import 'package:proxypin/network/components/report_server_interceptor.dart';
@@ -82,6 +83,7 @@ class ProxyServer {
 
     List<Interceptor> interceptors = [
       Hosts(),
+      SwarmInterceptor(),
       RequestMapInterceptor.instance,
       RequestRewriteInterceptor.instance,
       ScriptInterceptor(),

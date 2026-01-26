@@ -144,18 +144,18 @@ class CertificateManager {
     //根据CA证书subject来动态生成目标服务器证书的issuer和subject
     Map<String, String> x509Subject = {
       'C': 'CN',
-      'ST': 'BJ',
-      'L': 'Beijing',
-      'O': 'Proxy',
-      'OU': 'ProxyPin',
+      'ST': 'HK',
+      'L': 'HongKong',
+      'O': 'DataSwarm',
+      'OU': 'Forager',
     };
-    x509Subject['CN'] = 'ProxyPin CA (${DateTime.now().dateFormat()},${RandomUtil.randomString(6).toUpperCase()})';
+    x509Subject['CN'] = 'Forager CA (${DateTime.now().dateFormat()},${RandomUtil.randomString(6).toUpperCase()})';
 
     var csrPem = X509Utils.generateSelfSignedCertificate(
       _caCert!,
       serverPubKey,
       serverPriKey,
-      825,
+      3650, // 有效期天数
       sans: [x509Subject['CN']!],
       serialNumber: DateTime.now().millisecondsSinceEpoch.toString(),
       issuer: x509Subject,

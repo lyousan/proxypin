@@ -6,7 +6,7 @@ Future<Map<String, String>> baseHeaders() async {
   var packageInfo = await PackageInfo.fromPlatform();
   var headers = {
     'Token': '',
-    'X-Client': 'swarmprobe',
+    'X-Client': 'swarmforager',
     'X-Client-Ver': packageInfo.version,
   };
   var userInfoMgr = await UserInfoManager.instance;
