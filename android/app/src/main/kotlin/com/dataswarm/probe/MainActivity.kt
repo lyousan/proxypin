@@ -1,12 +1,12 @@
-package com.dataswarm.probe
+package com.dataswarm.forager
 
 import android.content.Intent
 import android.content.res.Configuration
-import com.dataswarm.probe.plugin.AppLifecyclePlugin
-import com.dataswarm.probe.plugin.InstalledAppsPlugin
-import com.dataswarm.probe.plugin.PictureInPicturePlugin
-import com.dataswarm.probe.plugin.ProcessInfoPlugin
-import com.dataswarm.probe.plugin.VpnServicePlugin
+import com.dataswarm.forager.plugin.AppLifecyclePlugin
+import com.dataswarm.forager.plugin.InstalledAppsPlugin
+import com.dataswarm.forager.plugin.PictureInPicturePlugin
+import com.dataswarm.forager.plugin.ProcessInfoPlugin
+import com.dataswarm.forager.plugin.VpnServicePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 
@@ -51,7 +51,7 @@ class MainActivity : FlutterActivity() {
             }
 
             val alertDialog = Intent(applicationContext, VpnAlertDialog::class.java)
-                .setAction("com.dataswarm.probe.ProxyVpnService")
+                .setAction("com.dataswarm.forager.ProxyVpnService")
             alertDialog.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(alertDialog)
             return

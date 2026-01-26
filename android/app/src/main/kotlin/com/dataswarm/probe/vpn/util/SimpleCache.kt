@@ -1,4 +1,4 @@
-package com.dataswarm.probe.vpn.util
+package com.dataswarm.forager.vpn.util
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors

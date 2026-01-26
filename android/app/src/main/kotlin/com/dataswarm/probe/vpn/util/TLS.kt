@@ -1,4 +1,4 @@
-package com.dataswarm.probe.vpn.util
+package com.dataswarm.forager.vpn.util
 
 import java.nio.ByteBuffer
 import kotlin.math.min

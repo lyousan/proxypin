@@ -1,7 +1,7 @@
-package com.dataswarm.probe.vpn.transport
+package com.dataswarm.forager.vpn.transport
 
-import com.dataswarm.probe.vpn.transport.protocol.IP4Header
-import com.dataswarm.probe.vpn.transport.protocol.TransportHeader
+import com.dataswarm.forager.vpn.transport.protocol.IP4Header
+import com.dataswarm.forager.vpn.transport.protocol.TransportHeader
 
 class Packet(var ipHeader: IP4Header, var transportHeader: TransportHeader, var buffer: ByteArray) {
 }

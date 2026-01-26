@@ -1,12 +1,12 @@
-package com.dataswarm.probe.vpn.socket;
+package com.dataswarm.forager.vpn.socket;
 
 import androidx.annotation.NonNull;
 import android.util.Log;
 
 
-import com.dataswarm.probe.vpn.Connection;
-import com.dataswarm.probe.vpn.TagKt;
-import com.dataswarm.probe.vpn.transport.protocol.TCPPacketFactory;
+import com.dataswarm.forager.vpn.Connection;
+import com.dataswarm.forager.vpn.TagKt;
+import com.dataswarm.forager.vpn.transport.protocol.TCPPacketFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

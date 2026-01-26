@@ -1,4 +1,4 @@
-package com.dataswarm.probe.vpn.transport.protocol
+package com.dataswarm.forager.vpn.transport.protocol
 
 interface TransportHeader {
     fun getSourcePort(): Int

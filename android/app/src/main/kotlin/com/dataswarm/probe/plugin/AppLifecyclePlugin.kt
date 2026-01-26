@@ -1,4 +1,4 @@
-package com.dataswarm.probe.plugin
+package com.dataswarm.forager.plugin
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel

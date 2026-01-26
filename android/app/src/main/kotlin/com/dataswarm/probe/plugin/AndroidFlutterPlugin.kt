@@ -1,4 +1,4 @@
-package com.dataswarm.probe.plugin
+package com.dataswarm.forager.plugin
 
 import android.app.Activity
 import io.flutter.embedding.engine.plugins.FlutterPlugin

@@ -1,10 +1,10 @@
-package com.dataswarm.probe.vpn.socket;
+package com.dataswarm.forager.vpn.socket;
 
 import android.util.Log;
 
 
-import com.dataswarm.probe.vpn.Connection;
-import com.dataswarm.probe.vpn.TagKt;
+import com.dataswarm.forager.vpn.Connection;
+import com.dataswarm.forager.vpn.TagKt;
 
 import java.io.IOException;
 import java.nio.channels.ClosedChannelException;

@@ -1,4 +1,4 @@
-package com.dataswarm.probe.vpn.socket
+package com.dataswarm.forager.vpn.socket
 
 import android.util.Log
 import java.io.FileOutputStream

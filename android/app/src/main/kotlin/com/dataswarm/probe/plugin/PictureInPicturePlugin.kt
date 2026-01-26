@@ -1,4 +1,4 @@
-package com.dataswarm.probe.plugin
+package com.dataswarm.forager.plugin
 
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
@@ -10,7 +10,7 @@ import android.content.IntentFilter
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.util.Rational
-import com.dataswarm.probe.ProxyVpnService
+import com.dataswarm.forager.ProxyVpnService
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel
 import android.util.Log

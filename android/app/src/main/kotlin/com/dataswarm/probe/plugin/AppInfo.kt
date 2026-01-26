@@ -1,4 +1,4 @@
-package com.dataswarm.probe.plugin
+package com.dataswarm.forager.plugin
 
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager

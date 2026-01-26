@@ -1,7 +1,7 @@
-package com.dataswarm.probe.vpn.transport.protocol
+package com.dataswarm.forager.vpn.transport.protocol
 
 
-import com.dataswarm.probe.vpn.util.PacketUtil
+import com.dataswarm.forager.vpn.util.PacketUtil
 import java.nio.ByteBuffer
 
 

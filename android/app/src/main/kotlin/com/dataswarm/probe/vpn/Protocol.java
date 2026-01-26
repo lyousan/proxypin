@@ -1,4 +1,4 @@
-package com.dataswarm.probe.vpn;
+package com.dataswarm.forager.vpn;
 
 public enum Protocol {
     TCP,

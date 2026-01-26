@@ -1,12 +1,12 @@
-package com.dataswarm.probe.vpn
+package com.dataswarm.forager.vpn
 
 import android.os.Build
 import android.util.Log
-import com.dataswarm.probe.vpn.socket.CloseableConnection
-import com.dataswarm.probe.vpn.socket.Constant
-import com.dataswarm.probe.vpn.socket.ProtectSocketHolder.Companion.protect
-import com.dataswarm.probe.vpn.util.PacketUtil
-import com.dataswarm.probe.vpn.util.ProcessInfoManager
+import com.dataswarm.forager.vpn.socket.CloseableConnection
+import com.dataswarm.forager.vpn.socket.Constant
+import com.dataswarm.forager.vpn.socket.ProtectSocketHolder.Companion.protect
+import com.dataswarm.forager.vpn.util.PacketUtil
+import com.dataswarm.forager.vpn.util.ProcessInfoManager
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.SocketAddress

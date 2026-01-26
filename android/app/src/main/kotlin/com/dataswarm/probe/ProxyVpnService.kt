@@ -1,4 +1,4 @@
-package com.dataswarm.probe
+package com.dataswarm.forager
 
 import android.app.Activity
 import android.app.Notification
@@ -13,10 +13,10 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.dataswarm.probe.plugin.VpnServicePlugin.Companion.REQUEST_CODE
-import com.dataswarm.probe.vpn.ProxyVpnThread
-import com.dataswarm.probe.vpn.socket.ProtectSocket
-import com.dataswarm.probe.vpn.socket.ProtectSocketHolder
+import com.dataswarm.forager.plugin.VpnServicePlugin.Companion.REQUEST_CODE
+import com.dataswarm.forager.vpn.ProxyVpnThread
+import com.dataswarm.forager.vpn.socket.ProtectSocket
+import com.dataswarm.forager.vpn.socket.ProtectSocketHolder
 
 /**
  * VPN服务
@@ -147,7 +147,7 @@ class ProxyVpnService : VpnService(), ProtectSocket {
         vpnInterface = createVpnInterface(proxyHost, proxyPort, allowPackages, disallowPackages)
         if (vpnInterface == null) {
             val alertDialog = Intent(applicationContext, VpnAlertDialog::class.java)
-                .setAction("com.dataswarm.probe.ProxyVpnService")
+                .setAction("com.dataswarm.forager.ProxyVpnService")
             alertDialog.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(alertDialog)
             return

@@ -1,4 +1,4 @@
-package com.dataswarm.probe.vpn.util
+package com.dataswarm.forager.vpn.util
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -7,9 +7,9 @@ import android.os.Process
 import android.system.OsConstants
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.dataswarm.probe.ProxyVpnService
-import com.dataswarm.probe.plugin.ProcessInfo
-import com.dataswarm.probe.vpn.Connection
+import com.dataswarm.forager.ProxyVpnService
+import com.dataswarm.forager.plugin.ProcessInfo
+import com.dataswarm.forager.vpn.Connection
 import kotlinx.coroutines.CoroutineScope
 import java.io.File
 import java.net.InetSocketAddress

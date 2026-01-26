@@ -1,6 +1,6 @@
-package com.dataswarm.probe.plugin
+package com.dataswarm.forager.plugin
 
-import com.dataswarm.probe.vpn.util.ProcessInfoManager
+import com.dataswarm.forager.vpn.util.ProcessInfoManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodChannel

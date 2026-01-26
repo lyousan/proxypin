@@ -1,9 +1,9 @@
-package com.dataswarm.probe.vpn.util
+package com.dataswarm.forager.vpn.util
 
 import android.util.Log
-import com.dataswarm.probe.vpn.formatTag
-import com.dataswarm.probe.vpn.transport.protocol.IP4Header
-import com.dataswarm.probe.vpn.transport.protocol.TCPHeader
+import com.dataswarm.forager.vpn.formatTag
+import com.dataswarm.forager.vpn.transport.protocol.IP4Header
+import com.dataswarm.forager.vpn.transport.protocol.TCPHeader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 

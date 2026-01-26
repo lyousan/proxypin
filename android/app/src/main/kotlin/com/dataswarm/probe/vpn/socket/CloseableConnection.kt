@@ -1,6 +1,6 @@
-package com.dataswarm.probe.vpn.socket
+package com.dataswarm.forager.vpn.socket
 
-import com.dataswarm.probe.vpn.Connection
+import com.dataswarm.forager.vpn.Connection
 
 interface CloseableConnection {
     /**

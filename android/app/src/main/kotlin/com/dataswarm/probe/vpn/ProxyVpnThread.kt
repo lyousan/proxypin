@@ -1,10 +1,10 @@
-package com.dataswarm.probe.vpn
+package com.dataswarm.forager.vpn
 
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import com.dataswarm.probe.ProxyVpnService.Companion.MAX_PACKET_LEN
-import com.dataswarm.probe.vpn.socket.ClientPacketWriter
-import com.dataswarm.probe.vpn.socket.SocketNIODataService
+import com.dataswarm.forager.ProxyVpnService.Companion.MAX_PACKET_LEN
+import com.dataswarm.forager.vpn.socket.ClientPacketWriter
+import com.dataswarm.forager.vpn.socket.SocketNIODataService
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InterruptedIOException

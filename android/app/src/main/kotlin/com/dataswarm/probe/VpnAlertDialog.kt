@@ -1,4 +1,4 @@
-package com.dataswarm.probe
+package com.dataswarm.forager
 
 import android.app.Activity
 import android.app.AlertDialog
