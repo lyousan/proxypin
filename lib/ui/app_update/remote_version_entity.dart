@@ -8,6 +8,7 @@ class RemoteVersionEntity {
   final String url;
   final String? content;
   final DateTime publishedAt;
+  final bool isForceUpdate;
 
   RemoteVersionEntity({
     required this.version,
@@ -17,11 +18,12 @@ class RemoteVersionEntity {
     required this.url,
     this.content,
     required this.publishedAt,
+    this.isForceUpdate = false,
   });
 
   @override
   String toString() {
-    return 'RemoteVersionEntity(version: $version, buildNumber: $buildNumber, releaseTag: $releaseTag, preRelease: $preRelease, url: $url, publishedAt: $publishedAt)';
+    return 'RemoteVersionEntity(version: $version, buildNumber: $buildNumber, releaseTag: $releaseTag, preRelease: $preRelease, url: $url, publishedAt: $publishedAt, isForceUpdate: $isForceUpdate)';
   }
 }
 
@@ -43,7 +45,8 @@ abstract class GithubReleaseParser {
         preRelease: preRelease,
         url: json["html_url"] as String,
         content: body?.last,
-        publishedAt: publishedAt);
+        publishedAt: publishedAt,
+        isForceUpdate: false);
   }
 }
 

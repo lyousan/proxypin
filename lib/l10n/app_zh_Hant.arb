@@ -322,7 +322,7 @@
   "appUpdateCheckVersion": "檢查更新",
   "appUpdateNotAvailableMsg": "已是最新版本",
   "appUpdateDialogTitle": "有可用更新",
-  "appUpdateUpdateMsg": "ProxyPin 的新版本現已推出。您想現在更新嗎？",
+  "appUpdateUpdateMsg": "Forager 的新版本現已推出。您想現在更新嗎？",
   "appUpdateCurrentVersionLbl": "目前版本",
   "appUpdateNewVersionLbl": "新版本",
   "appUpdateUpdateNowBtnTxt": "現在更新",

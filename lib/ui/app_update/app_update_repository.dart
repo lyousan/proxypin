@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:proxypin/l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:proxypin/network/util/logger.dart';
@@ -12,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants.dart';
 import 'new_version_dialog.dart';
+
+import 'package:proxypin/ui/mobile/dataswarm/config.dart';
 
 class AppUpdateRepository {
   static final HttpClient httpClient = HttpClient();
@@ -25,10 +28,10 @@ class AppUpdateRepository {
       }
 
       if (!context.mounted) return;
-
-      var availableUpdates = compareVersions(AppConfiguration.version, lastVersion.version);
+      var packageInfo = await PackageInfo.fromPlatform();
+      var availableUpdates = compareVersions(packageInfo.version, lastVersion.version);
       if (availableUpdates) {
-        if (canIgnore) {
+        if (canIgnore && !lastVersion.isForceUpdate) {
           var ignoreVersion = await SharedPreferencesAsync().getString(Constants.ignoreReleaseVersionKey);
           if (ignoreVersion == lastVersion.version) {
             logger.d("ignored release [${lastVersion.version}]");
@@ -42,7 +45,7 @@ class AppUpdateRepository {
         NewVersionDialog(
           AppConfiguration.version,
           lastVersion,
-          canIgnore: true,
+          canIgnore: !lastVersion.isForceUpdate,
         ).show(context);
         return;
       }
@@ -61,25 +64,29 @@ class AppUpdateRepository {
     }
   }
 
-  /// Fetches the latest version information from the GitHub releases API.
+  /// Fetches the latest version information from the custom server.
   static Future<RemoteVersionEntity?> getLatestVersion({bool includePreReleases = false}) async {
-    final response = await http.get(Uri.parse(Constants.githubReleasesApiUrl));
-    if (response.statusCode != 200 || response.body.isEmpty) {
-      logger.w("[AppUpdate] failed to fetch latest version info");
+    try {
+      final response = await http.get(Uri.parse(await SwarmForagerConfig.checkUpdateUrl));
+      Map<String, dynamic> result = jsonDecode(response.body);
+      if (!result['ok'] || result['data'] == null) {
+        logger.w("[AppUpdate] failed to fetch latest version info");
+        return null;
+      }
+
+      return RemoteVersionEntity(
+          version: result['data']['version'],
+          buildNumber: "",
+          releaseTag: "v${result['data']['version']}",
+          preRelease: false,
+          url: result['data']['download_url'],
+          content: result['data']['changelog'],
+          publishedAt: DateTime.now(),
+          isForceUpdate: result['data']['is_force_update'] ?? false);
+    } catch (e) {
+      logger.e("[AppUpdate] failed to fetch latest version info: $e");
       return null;
     }
-
-    var body = jsonDecode(response.body) as List;
-    final releases = body.map((e) => GithubReleaseParser.parse(e as Map<String, dynamic>));
-    late RemoteVersionEntity latest;
-    if (includePreReleases) {
-      latest = releases.first;
-    } else {
-      latest = releases.firstWhere((e) => e.preRelease == false);
-    }
-
-    logger.d("[AppUpdate] latest version: $latest");
-    return latest;
   }
 
   static bool compareVersions(String currentVersion, String latestVersion) {

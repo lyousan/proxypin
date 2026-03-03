@@ -26,6 +26,7 @@ import 'package:proxypin/network/util/random.dart';
 import 'package:proxypin/ui/component/device.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:proxypin/utils/lang.dart';
 
 import '../js/script_engine.dart';
 
@@ -98,7 +99,7 @@ async function onResponse(context, request, response) {
 
   static void registerLogHandler(LogHandler logHandler) {
     if (_logHandlers.any((it) => it.channelId == logHandler.channelId)) {
-       _logHandlers.removeWhere((it) => it.channelId == logHandler.channelId);
+      _logHandlers.removeWhere((it) => it.channelId == logHandler.channelId);
     }
     _logHandlers.add(logHandler);
   }
@@ -256,6 +257,22 @@ async function onResponse(context, request, response) {
     }
   }
 
+//删除脚本
+  Future<void> removeScriptByName(String name) async {
+    // 找到要删除的脚本项
+    var itemToRemove = list.firstWhereOrNull((item) => item.name == name);
+
+    // 如果找到了匹配的脚本，则删除它
+    if (itemToRemove != null) {
+      final home = await homePath();
+      var file = File(home + itemToRemove.scriptPath!);
+      if (await file.exists()) {
+        await file.delete();
+      }
+      list.remove(itemToRemove);
+    }
+  }
+
   Future<void> clean() async {
     _scriptMap.clear();
     while (list.isNotEmpty) {
@@ -379,8 +396,9 @@ class ScriptItem {
   List<RegExp?>? urlRegs;
 
   String? remoteUrl;
+  String? version;
 
-  ScriptItem(this.enabled, this.name, dynamic urls, {this.scriptPath, this.remoteUrl})
+  ScriptItem(this.enabled, this.name, dynamic urls, {this.scriptPath, this.remoteUrl, this.version})
       : urls = urls is String
             ? (urls.contains(',') ? urls.split(',').map((e) => e.trim()).toList() : [urls])
             : (urls is List<String> ? urls : <String>[]);
@@ -411,6 +429,7 @@ class ScriptItem {
       urls,
       scriptPath: json['scriptPath'],
       remoteUrl: json['remoteUrl'],
+      version: json['version'],
     );
   }
 
@@ -421,11 +440,12 @@ class ScriptItem {
       'url': urls.length == 1 ? urls[0] : urls,
       'scriptPath': scriptPath,
       if (remoteUrl != null) 'remoteUrl': remoteUrl,
+      if (version != null) 'version': version,
     };
   }
 
   @override
   String toString() {
-    return 'ScriptItem{enabled: $enabled, name: $name, url: $urls, scriptPath: $scriptPath, remoteUrl: $remoteUrl}';
+    return 'ScriptItem{enabled: $enabled, name: $name, url: $urls, scriptPath: $scriptPath, remoteUrl: $remoteUrl, version: $version}';
   }
 }

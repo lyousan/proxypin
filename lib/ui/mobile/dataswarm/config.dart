@@ -8,6 +8,7 @@ import 'package:proxypin/network/components/manager/hosts_manager.dart';
 import 'package:proxypin/network/components/manager/report_server_manager.dart';
 import 'package:proxypin/network/components/manager/request_rewrite_manager.dart';
 import 'package:proxypin/network/components/manager/rewrite_rule.dart';
+import 'package:proxypin/network/components/manager/script_manager.dart';
 import 'package:proxypin/network/util/logger.dart';
 import 'package:proxypin/utils/lang.dart';
 import 'package:proxypin/utils/navigator.dart';
@@ -44,6 +45,12 @@ class SwarmForagerConfig {
   static Future<String> get hertzUrl async {
     return await wrapUrl('$serverUrl/hello');
   }
+
+  static Future<dynamic> get scriptUrl async => await wrapUrl('$serverUrl/config/script');
+
+  static Future<String> get scriptConfigUrl async => await wrapUrl('$serverUrl/config/check_script_versions');
+
+  static Future<String> get checkUpdateUrl async => await wrapUrl('$serverUrl/config/check_app_version');
 
   static Future<String> wrapUrl(String url) async {
     var hostsManager = await HostsManager.instance;
@@ -109,6 +116,81 @@ class ReportConfigManager {
     }
     if (NavigatorHelper().context.mounted) {
       FlutterToastr.show(result['msg'], NavigatorHelper().context);
+    }
+  }
+}
+
+class ScriptConfigManager {
+  static Timer? timerTask;
+  static String? taskInfo;
+
+  static void startTimer() {
+    logger.i('startTimer 开始拉取脚本');
+    pullScripts();
+    if (timerTask != null) {
+      return;
+    }
+    timerTask = Timer.periodic(Duration(seconds: 300), (timer) {
+      pullScripts();
+    });
+  }
+
+  static void stopTimer() {
+    timerTask?.cancel();
+    timerTask = null;
+  }
+
+  // 拉取脚本
+  static Future<void> pullScripts() async {
+    final response =
+        await http.get(Uri.parse(await SwarmForagerConfig.scriptConfigUrl), headers: await common.baseHeaders());
+
+    logger.d('拉取脚本返回 ${response.body}');
+
+    // 请求成功，解析JSON数据
+    Map<String, dynamic> result = json.decode(response.body);
+    if (result['ok'] && result['data'] != null) {
+      final data = result['data'];
+      if (data is List) {
+        var scriptManager = await ScriptManager.instance;
+        for (var script in data) {
+          var scriptName = script['name'];
+          var scriptVersion = script['version'];
+          ScriptItem? localScript = scriptManager.list.firstWhereOrNull((it) => it.name == scriptName);
+          if (localScript == null || localScript.version != scriptVersion) {
+            logger.d('本地脚本不存在或版本不一致，开始拉取脚本 $scriptName');
+            await pullScriptByName(scriptName);
+          }
+        }
+      }
+
+      return;
+    }
+  }
+
+  static Future<void> pullScriptByName(String name) async {
+    final response = await http.get(Uri.parse('${await SwarmForagerConfig.scriptUrl}?name=$name'),
+        headers: await common.baseHeaders());
+    logger.d('拉取脚本返回 ${response.body}');
+    // 请求成功，解析JSON数据
+    Map<String, dynamic> result = json.decode(response.body);
+    if (result['ok'] && result['data'] != null) {
+      final data = result['data'];
+      var scriptManager = await ScriptManager.instance;
+      if (data is Map) {
+        var version = data['version'];
+        var url = data['url'];
+        var script = data['code'];
+        var enable = data['enable'];
+        await scriptManager.removeScriptByName(name);
+        if (enable) {
+          var scriptItem = ScriptItem(enable, name, url, version: version);
+          await scriptManager.addScript(scriptItem, script);
+        }
+        await scriptManager.flushConfig();
+      }
+      scriptManager.reloadScript();
+      return;
     }
   }
 }

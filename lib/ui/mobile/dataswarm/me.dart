@@ -30,12 +30,14 @@ class _DataSwarmMePageState extends State<DataSwarmMePage> implements EventListe
     widget.proxyServer.addListener(this);
     Hertz.start();
     ReportConfigManager.startTimer();
+    ScriptConfigManager.startTimer();
   }
 
   @override
   void dispose() {
     Hertz.stop();
     ReportConfigManager.stopTimer();
+    ScriptConfigManager.stopTimer();
     super.dispose();
   }
 

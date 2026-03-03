@@ -1983,7 +1983,7 @@ abstract class AppLocalizations {
   /// No description provided for @appUpdateUpdateMsg.
   ///
   /// In en, this message translates to:
-  /// **'A new version of ProxyPin is available. Would you like to update now?'**
+  /// **'A new version of Forager is available. Would you like to update now?'**
   String get appUpdateUpdateMsg;
 
   /// No description provided for @appUpdateCurrentVersionLbl.

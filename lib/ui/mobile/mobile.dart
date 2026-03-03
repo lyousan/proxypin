@@ -130,7 +130,7 @@ class MobileHomeState extends State<MobileHomePage> implements EventListener, Li
       });
     } else if (Platform.isAndroid) {
       // 暂时关闭更新检测
-      // AppUpdateRepository.checkUpdate(context);
+      AppUpdateRepository.checkUpdate(context);
     }
   }
 

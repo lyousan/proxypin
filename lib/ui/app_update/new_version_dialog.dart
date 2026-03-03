@@ -24,6 +24,7 @@ class NewVersionDialog extends StatelessWidget {
     if (_dialogKey.currentContext == null) {
       return showDialog(
         context: context,
+        barrierDismissible: canIgnore,
         useRootNavigator: true,
         builder: (context) => this,
       );
@@ -78,10 +79,11 @@ class NewVersionDialog extends StatelessWidget {
             },
             child: Text(localizations.appUpdateIgnoreBtnTxt),
           ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(localizations.appUpdateLaterBtnTxt),
-        ),
+        if (canIgnore)
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(localizations.appUpdateLaterBtnTxt),
+          ),
         TextButton(
           onPressed: () async {
             await launchUrl(Uri.parse(newVersion.url), mode: LaunchMode.externalApplication);
